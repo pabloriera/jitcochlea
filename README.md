@@ -7,30 +7,37 @@ The dynamic equations of the elements of the cochlear partition can be written i
 ```python
 C = Cochlea('basic')
 
-spatial_parameters = ("d","d0", "ww")
-inputs = ()
-formula = {'x': 'y',
+formula = {'x': 'y',       					# basic oscillator equations with fluid pressure (p) and impedance term (g)
            'y': 'p - g',
-           'g': 'ww*x + d*y + d0*x*x*y '}
+           'g': 'ww*x + d*y + d0*x*x*y '}   # the term g is mandatory as it is involved for solving the pressure p
+
+spatial_parameters = ("d","d0", "ww")       # the spatial parameters are set from the base to apex
+inputs = ()								    # inputs are time dependent signals
+
 fixed_parameters = ()
 
 C.setup(formula, spatial_parameters, fixed_parameters, inputs)
 C.generate_code()
 C.build()
 
-tt, X_t = C.run(stimulus, data=data)
+tt, X_t = C.run(stimulus, data=data)        # the stimulus is the signal that forces the oval window
 ```
 
+**TODO**
+
+Add noise, arbitrary couplings, feedback, lateral feed.
 
 **Dependencies:**
 
 Boost with odeint (starting in v 1.52)
+
 numpy
+
 g++
 
 **In ubuntu:**
 
-sudo apt-get install libboost-all-dev
+sudo apt-get install libboost-all-dev python-numpy build-essential
 
 **Installation:**
 
