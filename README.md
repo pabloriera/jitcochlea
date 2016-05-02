@@ -1,4 +1,4 @@
-<H2>Cochlea dynamical model</H2>
+** Cochlea dynamical model **
 
 This module allows to build and run a dynamical model of the cochlea with 1-D fluid coupling.
 
