@@ -1,4 +1,4 @@
-# Cochlea dynamical model
+# Flexible cochlea simulator
 
 This module allows to build and run a dynamical model of the cochlea with 1-D fluid coupling.
 
