@@ -29,18 +29,19 @@ Add noise, arbitrary couplings, feedback, lateral feed, fix setup
 
 **Dependencies:**
 
-Boost with odeint (starting in v 1.52)
-
-numpy
-
-g++
+- Boost with odeint (starting in v 1.52)
+- numpy
+- g++
 
 **In ubuntu:**
 
+```
 sudo apt-get install libboost-all-dev python-numpy build-essential
+```
 
 **Installation:**
 
+```
 sudo python setup.py install
 sudo chmod 644 /usr/local/lib/python2.7/dist-packages/jitcochlea-1.0-py2.7.egg/src/*
-
+```
