@@ -34,19 +34,20 @@ class Cochlea():
     def generate_code(self,debug=False,dtype_=np.float64):        
         import os
         print os.getcwd()
-        print os.path.dirname(os.path.realpath(__file__))
-        os.chdir( os.path.dirname(os.path.realpath(__file__))  )
-        print os.getcwd()
+        installed_path = os.path.dirname(os.path.realpath(__file__))+'/'
+        print installed_path
+        # os.chdir( os.path.dirname(os.path.realpath(__file__))  )
+        # print os.getcwd()
         
         self.dtype = dtype_
         
-        with  open("../src/jitcochlea.cpp") as file_:
+        with  open(installed_path+"../src/jitcochlea.cpp",'r') as file_:
             self.code0 = file_.read()
         
-        with  open("../src/cochlea.cpp") as file_:
+        with  open(installed_path+"../src/cochlea.cpp",'r') as file_:
             self.code1 = file_.read()
         
-        with  open("../src/cochlea.hpp") as file_:
+        with  open(installed_path+"../src/cochlea.hpp",'r') as file_:
             self.code2 = file_.read()
                 
         subs = {"system_equation_0":self.equation.replace("i","0").replace("j","0"),
