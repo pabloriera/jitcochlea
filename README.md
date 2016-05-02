@@ -29,7 +29,7 @@ Add noise, arbitrary couplings, feedback, lateral feed, fix setup
 
 **Dependencies:**
 
-- Boost with odeint (starting in v 1.52)
+- Boost with odeint (v1.52 or more)
 - numpy
 - g++
 
