@@ -20,12 +20,14 @@ C.setup(formula, spatial_parameters, fixed_parameters, inputs)
 C.generate_code()
 C.build()
 
-tt, X_t = C.run(stimulus, data=data)        # the stimulus is the signal that forces the oval window
+tt, X_t = C.run(stimulus, data=data)        # the stimulus is the signal that forces the oval window, 
+											# the data provides the values of the parameters, the cochlea dimensions, 
+											# and the simulation configurations.
 ```
 
 **TODO**
 
-Add noise, arbitrary couplings, feedback, lateral feed, fix setup
+Add noise, arbitrary couplings, feedback, lateral feed, fix setup, more readable data key
 
 **Dependencies:**
 
