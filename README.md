@@ -25,7 +25,7 @@ tt, X_t = C.run(stimulus, data=data)        # the stimulus is the signal that fo
 
 **TODO**
 
-Add noise, arbitrary couplings, feedback, lateral feed.
+Add noise, arbitrary couplings, feedback, lateral feed, fix setup
 
 **Dependencies:**
 
@@ -42,4 +42,5 @@ sudo apt-get install libboost-all-dev python-numpy build-essential
 **Installation:**
 
 sudo python setup.py install
+sudo chmod 644 /usr/local/lib/python2.7/dist-packages/jitcochlea-1.0-py2.7.egg/src/*
 
