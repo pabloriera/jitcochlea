@@ -1,4 +1,4 @@
-# Flexible cochlea simulator
+# Cochlea dynamical model
 
 This module allows to build and run a dynamical model of the cochlea with 1-D fluid coupling.
 
@@ -9,9 +9,9 @@ C = Cochlea('basic')
 
 formula = {'x': 'y',       					# basic oscillator equations with fluid pressure (p) and impedance term (g)
            'y': 'p - g',
-           'g': 'ww*x + d*y + d0*x*x*y '}   # the term g is mandatory as it is involved for solving the pressure p
+           'g': 'ww*x + d0*y + d*x*x*y '}   # the term g is mandatory as it is involved for solving the pressure p
 
-spatial_parameters = ("d","d0", "ww")       # the spatial parameters are set from the base to apex
+spatial_parameters = ("d0","d", "ww")       # the spatial parameters are set from the base to apex
 inputs = ()								    # inputs are time dependent signals
 
 fixed_parameters = ()
