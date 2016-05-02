@@ -4,7 +4,7 @@ This module allows to build and run a dynamical model of the cochlea with 1-D fl
 
 The dynamic equations of the elements of the cochlear partition can be written in a C like format, and then the module builds and runs it.
 
-´´´
+```python
 C = Cochlea('basic')
 
 spatial_parameters = ("d","d0", "ww")
@@ -19,7 +19,7 @@ C.generate_code()
 C.build()
 
 tt, X_t = C.run(stimulus, data=data)
-´´´
+```
 
 
 **Dependencies:**
