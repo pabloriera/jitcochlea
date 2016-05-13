@@ -33,9 +33,9 @@ class Cochlea():
         
     def generate_code(self,debug=False,dtype_=np.float64):        
         import os
-        print os.getcwd()
+        # print os.getcwd()
         installed_path = os.path.dirname(os.path.realpath(__file__))+'/'
-        print installed_path
+        # print installed_path
         # os.chdir( os.path.dirname(os.path.realpath(__file__))  )
         # print os.getcwd()
         

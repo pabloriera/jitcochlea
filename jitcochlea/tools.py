@@ -12,6 +12,8 @@ class DynLib():
 
     def build_code(self,codes_list, clean=True , include_dirs = "[]" ):
         
+        import os
+        print os.getcwd()
 
         if type(codes_list) not in [tuple, list]:
             codes_list = [codes_list]
@@ -93,10 +95,10 @@ def eqparser(formula, parameters=[], coefficients = [], inputs=[]):
             aux = formula[k]
 
             for j,k2 in enumerate(dynvars):
-                aux = re.sub('\\b'+ k2 + '\\b', "X[i+"+`j`+ "]", aux)  
+                aux = re.sub(r'\b'+ k2 + r'\b', "X[i+"+`j`+ "]", aux)  
     
-            aux = re.sub('\\bp\\b', "p[j]", aux)
-            aux = re.sub('\\bg\\b', "g[j]", aux)
+            aux = re.sub(r'\bp\b', "p[j]", aux)
+            aux = re.sub(r'\bg\b', "g[j]", aux)
                 
             eq[k] = var+"["+ix+"+"+`i`+"]=" + aux + ";\n"
         
@@ -231,3 +233,15 @@ def funcs2code(fnspecs,gpu=False):
         string+= s1 + fkey + "(" + args + s2 + s3 + func + ";\n}\n "
 
     return string
+
+
+# import re 
+
+# s = "ww*x[-2] + d*y + d0*x*x*y"
+
+# print re.sub(r'x\[(.*)\]', r'linear_interpolation( X.data(), i + \1/step*n_vars )',s)
+# #print re.sub(r'x\[(.*)\]', "a",s)
+
+# s = "ww*x + d*y + d0*x*x*y"
+
+# print re.sub(r'\bx\b', "a",s)

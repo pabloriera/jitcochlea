@@ -16,7 +16,7 @@ spatial_parameters = ("d","d0", "ww")
 inputs = ()
 formula = {'x': 'y',
            'y': 'p - g',
-           'g': 'ww*x + d*y + d0*x*x*y '}
+           'g': 'ww*x+ d*y + d0*x*x*y '}
 fixed_parameters = ()
 
 C.setup(formula, spatial_parameters, fixed_parameters, inputs)
@@ -26,7 +26,7 @@ C.build()
 #%%
          
 data = {'fs': 100000.0, 
-         'n_channels':400,
+         'n_channels':800,
          'length': 0.035,
          'density': 1000,
          'height': 0.001, 
@@ -42,9 +42,11 @@ data = {'fs': 100000.0,
 from scipy.signal import tukey
 
 f0 = 500.0
-n_t = int(0.02*data['fs'])
+n_t = int(0.2*data['fs'])
 t_signal = np.arange(n_t)/data['fs']
 stimulus = 1000*np.sin(2*np.pi*t_signal*f0)*tukey(n_t)
+
+x = np.linspace(0,data['length'],data['n_channels'])
 
 fmax = 16000.0
 fmin = 100.0
@@ -61,4 +63,4 @@ data['d0'] = d*10.0
          
 tt, X_t = C.run(stimulus, data=data,  decimate = 1)
 #%%
-pl.semilogy( np.sqrt(X_t[:,::2]**2).mean(0))
+pl.semilogy(x[1:], np.sqrt(X_t[:-1,2::2]**2).mean(0))

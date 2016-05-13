@@ -29,7 +29,7 @@ C.build()
 #%%
          
 data = {'fs': 100000.0, 
-         'n_channels':600,
+         'n_channels':1000,
          'length': 0.035,
          'density': 1000,
          'height': 0.001, 
@@ -46,7 +46,7 @@ from scipy.signal import tukey
 
 
 f0 = 1000.0
-n_t = int(0.1*data['fs'])
+n_t = int(0.5*data['fs'])
 t_signal = np.arange(n_t)/data['fs']
 stimulus = 1*np.sin(2*np.pi*t_signal*f0)*tukey(n_t)
 stimulus += 1*np.sin(2*np.pi*t_signal*5*f0)*tukey(n_t)
@@ -55,18 +55,18 @@ fmax = 20000.0
 fmin = 100.0
 ff = np.flipud( np.logspace(np.log10(fmin),np.log10(fmax),data['n_channels']))
 
-Q = 4
+Q = 20
 w = 2*np.pi*ff
 ww = w**2
 d = w/Q
 
 data['ww'] = ww
-d = 10
-data['wz'] = np.r_[w[d:],np.zeros(d)]
+s = 5
+data['wz'] = np.r_[w[s:],np.zeros(s)]
 data['d'] = d
-data['alpha'] = 5*0
+data['alpha'] = 1
          
-tt, X_t = C.run(stimulus, data=data,  decimate = 1)
+tt, X_t = C.run(stimulus, data=data,  decimate = 2)
 #%%
 pl.figure(23)
 #pl.clf()
