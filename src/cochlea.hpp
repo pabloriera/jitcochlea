@@ -106,7 +106,10 @@ inline floating linear_interpolation_row(floating_pointer S, floating m, int col
     int m_1  = floor(m);
     int m_2  = m_1 + 1;
     floating ee = m - m_1;
-    if ((m_1*M+col>0) && (m_2*M + col<N*M))
+
+    //cout << m_2 <<"\t"<< M <<"\t"<< col << endl;
+
+    if ((m_1*M+col>0) && (m_2*M + col < N*M))
         return S[m_1*M+col]*(1-ee) + S[m_2*M + col]*ee;
     else
         return 0;

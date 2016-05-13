@@ -95,7 +95,7 @@ def eqparser(formula, parameters=[], coefficients = [], inputs=[]):
             aux = formula[k]
 
             for j,k2 in enumerate(dynvars):
-                aux = re.sub(r'x\[(.*)\]', r'linear_interpolation_row( X.data(), i+\1*N,' +`j`+ ',N,n_vars )',aux)
+                aux = re.sub(k2+r'\[(.*?)\]', r'linear_interpolation_row( X.data(), j+\1*N,' +`j`+ ',N,n_vars )',aux)
                 aux = re.sub(r'\b'+ k2 + r'\b', "X[i+"+`j`+ "]", aux)  
     
             aux = re.sub(r'\bp\b', "p[j]", aux)
@@ -299,11 +299,11 @@ def pure2cochlea(C, pure_tone,data):
     A = db2rms(pure_tone['amplitude_db'])
     stimulus = tukey(n_t,0.2)*A*np.sin(2*np.pi*pure_tone['f0']*t)    
 
-    tt, X_t = C.run(stimulus, data=data,  decimate = data['decimate'])
+    tt, X_t = C.run(stimulus, data=data )
     
     return tt, X_t
 
-ascale = 0.001
+ascale = 1e-8
 
 def ftoerb(f):
     return 24.7 * (4.37 * f/1000 + 1)
@@ -320,16 +320,6 @@ def rms2db(Arms):
 def db2rms(Idb):
     return 20e-6*10**(Idb/20.0)*ascale
 
-# import re 
-
-# s = "ww*x[-2] + d*y + d0*x*x*y"
-
-# print re.sub(r'x\[(.*)\]', r'linear_interpolation( X.data(), i + \1/step*n_vars )',s)
-# #print re.sub(r'x\[(.*)\]', "a",s)
-
-# s = "ww*x + d*y + d0*x*x*y"
-
-# print re.sub(r'\bx\b', "a",s)
 
 def param_grid(**kwargs):
     import numpy as np
