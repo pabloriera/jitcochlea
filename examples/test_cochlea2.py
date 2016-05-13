@@ -11,7 +11,6 @@ from jitcochlea import Cochlea
 
 C = Cochlea('basic')
 
-
 spatial_parameters = ("d", "ww","wz")
 inputs = ()
 formula = {'x': 'y',
