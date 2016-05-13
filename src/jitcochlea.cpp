@@ -28,16 +28,16 @@ extern "C" void run(floating *X_t, floating* tt, floating* X_0, floating* inputs
     C.m0 = base_parameters[2];
     C.fluid = base_parameters[3];
     
-    cout << "C.alpha:" << C.alpha << "\t";
-    cout << "C.beta:" << C.beta << "\t";
-    cout << "C.m0:" << C.m0 << "\t";
-    cout << "C.n_t:" << C.n_t << "\t";
-    cout << "C.n_vars:" << C.n_vars << "\t";
-    cout << "C.n_channels:" << C.n_channels << "\t";
-    cout << "C.n_inputs:" << C.alpha << "\t";
-    cout << "C.n_parameters:" << C.n_parameters << "\t";
-    cout << "fs:" << fs << "\t";
-    cout << "dec:" << dec << "\n";
+    // cout << "C.alpha:" << C.alpha << "\t";
+    // cout << "C.beta:" << C.beta << "\t";
+    // cout << "C.m0:" << C.m0 << "\t";
+    // cout << "C.n_t:" << C.n_t << "\t";
+    // cout << "C.n_vars:" << C.n_vars << "\t";
+    // cout << "C.n_channels:" << C.n_channels << "\t";
+    // cout << "C.n_inputs:" << C.alpha << "\t";
+    // cout << "C.n_parameters:" << C.n_parameters << "\t";
+    // cout << "fs:" << fs << "\t";
+    // cout << "dec:" << dec << "\n";
 
     floating dt = 1.0/fs;  
     floating tmax = (C.n_t - 1)*dt;
@@ -58,9 +58,9 @@ extern "C" void run(floating *X_t, floating* tt, floating* X_0, floating* inputs
     floating abs_tol = solver_options[1];
     floating rel_tol = solver_options[2];   
 
-    cout << "solver:" << solver << "\t";
-    cout << "abs_tol:" << abs_tol<< "\t";
-    cout << "rel_tol:" << rel_tol << "\n";
+    // cout << "solver:" << solver << "\t";
+    // cout << "abs_tol:" << abs_tol<< "\t";
+    // cout << "rel_tol:" << rel_tol << "\n";
 
     //Runge Kutta constant dt 
     if(solver==0)

@@ -3,7 +3,7 @@ from numpy.ctypeslib import ndpointer
 import numpy as np
 from string import Template
 
-from .tools import DynLib, eqparser
+from .tools import DynLib, eqparser, funcs2code
 
 
 class Cochlea():
@@ -11,6 +11,7 @@ class Cochlea():
     def __init__(self,name):
         self.name = name
         self.builded = False
+        self.extra_functions_string = ""
     
     def setup(self, formula, spatial_parameters, fix_parameters, inputs):
         
@@ -29,6 +30,9 @@ class Cochlea():
         #dynvars,g_assign, main_eq, n_vars, n_inputs, n_spatial_parameters, n_fix_parameters = eqparser(formula, spatial_parameters, fix_parameters , inputs)
         #g_assign = "g[i] = X[i*n_vars+1] * pa[i+1*N] +  X[i*n_vars] * pa[i+0*N] ;"
 
+    def extra_functions(self, fnspecs):
+
+        self.extra_functions_string = funcs2code(fnspecs)
         
         
     def generate_code(self,debug=False,dtype_=np.float64):        
@@ -49,20 +53,23 @@ class Cochlea():
         
         with  open(installed_path+"../src/cochlea.hpp",'r') as file_:
             self.code2 = file_.read()
+
                 
         subs = {"system_equation_0":self.equation.replace("i","0").replace("j","0"),
                 "system_equation_i":self.equation,
                 "g_assignation": self.g_assign,
                 "input_0": "linear_interpolation(in,t / dt)",
                 "input_i": 0,
-                "debug0":["//",""][debug]}        
+                "debug0":["//",""][debug],
+                "extra_functions":self.extra_functions_string}        
                 
         self.code1 = Template(self.code1).substitute(subs)
 
         
     def build(self,include_dirs_=[""]):
-    
-        include_dirs = ["../src/"]+include_dirs_
+        import os
+        installed_path = os.path.dirname(os.path.realpath(__file__))+'/'
+        include_dirs = [installed_path+"../src/"]+include_dirs_
         
         self.lib = DynLib(self.name)
         self.lib.build_code([self.code0, self.code1],True, include_dirs = include_dirs)
@@ -85,7 +92,7 @@ class Cochlea():
          
         self.erase_lib()
        
-    def run(self, stimulus, X_0 = np.array([]), data={},  decimate = 1):
+    def run(self, stimulus, X_0 = np.array([]), data={}):
         import numpy as np
     
         #ff = np.flipud( np.logspace(np.log10(data['fmin']),np.log10(data['fmax']),data['n_channels']))
@@ -112,7 +119,7 @@ class Cochlea():
                 'middle_ear': False, 'density': 1000, 'length': 0.035,
                 'mass': 0.03, 'fmin': 100.0, 'fluid':1,
                 'n_channels':400, 'm0':1,'mef':10.0,
-                'solver':0,'abs_tol':1e-4,'rel_tol':1e-4}
+                'solver':0,'abs_tol':1e-4,'rel_tol':1e-4,'decimate':1}
                 
         data_.update(data)
         data = data_.copy()        
@@ -134,7 +141,7 @@ class Cochlea():
             
 
         n_t = stimulus.size
-        dec = decimate
+        dec = data['decimate']        
         n_t_dec = int(n_t/dec)
         fluid = data['fluid']
         

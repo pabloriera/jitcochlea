@@ -1,5 +1,9 @@
 #include "cochlea.hpp"
 
+
+$extra_functions
+
+
 void Cochlea_t::setup()
 {
     N = n_channels;

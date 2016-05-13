@@ -95,6 +95,7 @@ def eqparser(formula, parameters=[], coefficients = [], inputs=[]):
             aux = formula[k]
 
             for j,k2 in enumerate(dynvars):
+                aux = re.sub(r'x\[(.*)\]', r'linear_interpolation_row( X.data(), i+\1*N,' +`j`+ ',N,n_vars )',aux)
                 aux = re.sub(r'\b'+ k2 + r'\b', "X[i+"+`j`+ "]", aux)  
     
             aux = re.sub(r'\bp\b', "p[j]", aux)
@@ -139,6 +140,196 @@ def eqparser(formula, parameters=[], coefficients = [], inputs=[]):
 
     return dynvars, g_assing, main_eq, n_eq, n_inputs, n_parameters, n_coefficients
 
+def funcs2code(fnspecs):
+
+    """
+    example:
+
+    fnspecs = {'phi': (['x','a','b'], '-a*x*x*x+b*x*x' ) }
+
+    floating phi( floating x,floating a, floating b);
+
+    floating phi( floating x,floating a, floating b)
+    {
+        return -a*x*x*x+b*x*x;
+    }
+    """
+    
+    s1 = "floating "        
+    s2 = ")\n{\n"
+    s3 = "return "
+
+    string = ""
+
+    for fkey,fspec in fnspecs.iteritems():
+
+        args = ",".join(['float '+aux for aux in  fspec[0] ])
+
+        func = fspec[1]
+
+        string+= s1 + fkey + "(" + args + ");\n"
+
+    string+="\n\n"
+
+    for fkey,fspec in fnspecs.iteritems():
+
+        args = ",".join(['float '+aux for aux in  fspec[0] ])
+
+        func = fspec[1]
+
+        string+= s1 + fkey + "(" + args + s2 + s3 + func + ";\n}\n "
+
+    return string
+
+def chunks(L, n):
+    return [L[i::n] for i in range(n)]
+
+def pure2cochlea_explore_thread(C, pure_tone,data,nthreads=1,func=None):
+    
+
+    from threading import Thread
+       
+    f0_list = pure_tone['f0']
+    A_db_list = pure_tone['amplitude_db']
+    duration_list =pure_tone['duration']
+    
+    responses= []
+    
+    class worker(Thread):
+        def __init__ (self,jj):
+            Thread.__init__(self)
+            self.jj = jj
+            
+        def run(self):
+            jj = self.jj
+            
+            for j in jj:
+                pure_tone = {'amplitude_db':A_db_list[j],'f0':f0_list[j],'duration':duration_list[j]}
+                pure_tone['ix']=j
+                            
+                print "Running",j,"of",len(f0_list)
+                print A_db_list[j],f0_list[j],duration_list[j]
+                
+                tt, X_t = pure2cochlea(C,  pure_tone, data )
+                if func:
+                    pure_tone['out']= func(X_t)
+                else:
+                    pure_tone['out']= ( tt, X_t )
+                
+                responses.append(pure_tone)
+
+    if nthreads>len(f0_list):
+        nthreads = len(f0_list)
+        
+    chunks_list = chunks( range(len(f0_list)),nthreads )
+    
+    thr = range(nthreads)
+    for k in xrange(nthreads):
+        jj = chunks_list[k]
+        thr[k] = worker(jj)
+        thr[k].start()
+        
+    for k in xrange(nthreads):
+        thr[k].join()
+        
+    return responses
+
+def pure2cochlea_explore_multiprocess(C, pure_tone, data, nprocs = 1, func=None):
+   
+    from multiprocessing import Process,Queue
+    
+    f0_list = pure_tone['f0']
+    A_db_list = pure_tone['amplitude_db']
+    duration_list =pure_tone['duration']
+           
+    def worker(jj,out_q):
+        
+        response = []
+        
+        for j in jj:
+            pure_tone = {'amplitude_db':A_db_list[j],'f0':f0_list[j],'duration':duration_list[j]}
+            pure_tone['ix']=j
+            print "Running",j,"of",len(jj)
+            print A_db_list[j],f0_list[j],duration_list[j]
+            
+            tt, X_t = pure2cochlea(C,  pure_tone, data )
+            if func:
+                pure_tone['out']= func(X_t)
+            else:
+                pure_tone['out']= ( tt, X_t )
+            
+            response.append(pure_tone)
+        
+        out_q.put(response)
+                
+
+    if nprocs>len(f0_list):
+        nprocs = len(f0_list)
+        
+    chunks_list = chunks( range(len(f0_list)),nprocs )
+    
+    procs = []
+    
+    out_q = Queue()
+   
+    for k in xrange(nprocs):
+        jj = chunks_list[k]
+        p = Process(target=worker,args=(jj, out_q))
+        
+        procs.append(p)
+        p.start()
+   
+    responses = []
+    for k in range(nprocs):
+        responses= responses + out_q.get()
+        
+    for p in procs:
+        p.join()       
+
+    return responses
+
+
+def pure2cochlea(C, pure_tone,data):
+    import numpy as np
+    from scipy.signal import tukey
+
+    n_t = np.ceil(data['fs']*pure_tone['duration'])
+    t = np.arange(n_t)/data['fs']
+
+    A = db2rms(pure_tone['amplitude_db'])
+    stimulus = tukey(n_t,0.2)*A*np.sin(2*np.pi*pure_tone['f0']*t)    
+
+    tt, X_t = C.run(stimulus, data=data,  decimate = data['decimate'])
+    
+    return tt, X_t
+
+ascale = 0.001
+
+def ftoerb(f):
+    return 24.7 * (4.37 * f/1000 + 1)
+
+def ftoerbscale(f):
+    return 21.4*np.log10(4.37*f/1000+1)
+
+def ftocb(f):
+    return 25+75*(1+1.4*(f/1000)**2)**0.69
+
+def rms2db(Arms):
+    return 20*np.log10(Arms/20e-6/ascale)
+
+def db2rms(Idb):
+    return 20e-6*10**(Idb/20.0)*ascale
+
+# import re 
+
+# s = "ww*x[-2] + d*y + d0*x*x*y"
+
+# print re.sub(r'x\[(.*)\]', r'linear_interpolation( X.data(), i + \1/step*n_vars )',s)
+# #print re.sub(r'x\[(.*)\]', "a",s)
+
+# s = "ww*x + d*y + d0*x*x*y"
+
+# print re.sub(r'\bx\b', "a",s)
 
 def param_grid(**kwargs):
     import numpy as np
@@ -188,60 +379,3 @@ def param_grid(**kwargs):
 
     else:
         return {k:kwargs[k] for k in fixed}
-
-def funcs2code(fnspecs,gpu=False):
-
-    """
-    example:
-
-    fnspecs = {'phi': (['x','a','b'], '-a*x*x*x+b*x*x' ) }
-
-    __device__ float phi( float x,float a, float b);
-
-    __device__ float phi( float x,float a, float b)
-    {
-        return -a*x*x*x+b*x*x;
-    }
-    """
-    
-    if gpu == True:
-        s1 = "__device__ float "
-    else:
-        s1 = "float "
-        
-    s2 = ")\n{\n"
-    s3 = "return "
-
-    string = ""
-
-    for fkey,fspec in fnspecs.iteritems():
-
-        args = ",".join(['float '+aux for aux in  fspec[0] ])
-
-        func = fspec[1]
-
-        string+= s1 + fkey + "(" + args + ");\n"
-
-    string+="\n\n"
-
-    for fkey,fspec in fnspecs.iteritems():
-
-        args = ",".join(['float '+aux for aux in  fspec[0] ])
-
-        func = fspec[1]
-
-        string+= s1 + fkey + "(" + args + s2 + s3 + func + ";\n}\n "
-
-    return string
-
-
-# import re 
-
-# s = "ww*x[-2] + d*y + d0*x*x*y"
-
-# print re.sub(r'x\[(.*)\]', r'linear_interpolation( X.data(), i + \1/step*n_vars )',s)
-# #print re.sub(r'x\[(.*)\]', "a",s)
-
-# s = "ww*x + d*y + d0*x*x*y"
-
-# print re.sub(r'\bx\b', "a",s)

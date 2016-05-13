@@ -9,8 +9,6 @@ using namespace std;
 
 #define PI 3.14159265358979323846
 
-
-
 typedef double floating;
 typedef vector<floating> floating_vector;
 typedef floating* floating_pointer;
@@ -42,6 +40,7 @@ class Cochlea_t {
         floating_pointer X_t;
         
         floating dt;
+        
         
         int n_t, n_vars, n_channels, n_parameters, n_coefficients, n_inputs, N;
         
@@ -99,6 +98,18 @@ inline floating linear_interpolation(floating_pointer S, floating k)
     size_t k_2  = k_1 + 1;
     floating ee = k - k_1;
     return S[k_1]*(1-ee) + S[k_2]*ee;
+}
+
+
+inline floating linear_interpolation_row(floating_pointer S, floating m, int col, int N, int M)
+{
+    int m_1  = floor(m);
+    int m_2  = m_1 + 1;
+    floating ee = m - m_1;
+    if ((m_1*M+col>0) && (m_2*M + col<N*M))
+        return S[m_1*M+col]*(1-ee) + S[m_2*M + col]*ee;
+    else
+        return 0;
 }
 
 #endif
