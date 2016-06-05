@@ -27,7 +27,7 @@ tt, X_t = C.run(stimulus, data=data)        # the stimulus is the signal that fo
 
 **TODO**
 
-Add noise, arbitrary couplings, feedback, lateral feed, fix setup, more readable data key
+Add noise, arbitrary couplings, feedback, fix setup, more readable data key
 
 **Dependencies:**
 
