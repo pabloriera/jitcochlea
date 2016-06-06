@@ -67,12 +67,12 @@ data['wz'] = w#np.r_[w[s:],np.zeros(s)]
 data['d'] = d
 data['e'] = data['wz']
 data['alpha'] = 1e18
-data['beta'] =  1e-18
+data['beta'] =  0
 
 out = C.run(stimulus, data=data)
 #%%
 
-x = out['x']
+x = out['x'] + out['z1']
 
 pl.figure(23)
 #pl.clf()

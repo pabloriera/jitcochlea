@@ -140,7 +140,7 @@ def eqparser(formula, parameters=[], coefficients = [], inputs=[]):
 
     return dynvars, g_assing, main_eq, n_eq, n_inputs, n_parameters, n_coefficients
 
-def funcs2code(fnspecs):
+def funcs2code(fnspecs,oneline=True):
 
     """
     example:
@@ -163,7 +163,7 @@ def funcs2code(fnspecs):
 
     for fkey,fspec in fnspecs.iteritems():
 
-        args = ",".join(['float '+aux for aux in  fspec[0] ])
+        args = ",".join([s1 + aux for aux in  fspec[0] ])
 
         func = fspec[1]
 
@@ -173,11 +173,17 @@ def funcs2code(fnspecs):
 
     for fkey,fspec in fnspecs.iteritems():
 
-        args = ",".join(['float '+aux for aux in  fspec[0] ])
+        args = ",".join([s1 + aux for aux in  fspec[0] ])
 
         func = fspec[1]
 
-        string+= s1 + fkey + "(" + args + s2 + s3 + func + ";\n}\n "
+        if oneline:
+
+            string+= s1 + fkey + "(" + args + s2 + s3 + func + ";\n}\n "
+
+        else:
+
+            string+= s1 + fkey + "(" + args + s2 + func + "\n}\n "
 
     return string
 
@@ -303,7 +309,7 @@ def pure2cochlea(C, pure_tone,data):
     
     return out
 
-ascale = 1e-8
+ascale = 1e-4
 
 def ftoerb(f):
     return 24.7 * (4.37 * f/1000 + 1)

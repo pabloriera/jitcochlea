@@ -30,9 +30,9 @@ class Cochlea():
         #dynvars,g_assign, main_eq, n_vars, n_inputs, n_spatial_parameters, n_fix_parameters = eqparser(formula, spatial_parameters, fix_parameters , inputs)
         #g_assign = "g[i] = X[i*n_vars+1] * pa[i+1*N] +  X[i*n_vars] * pa[i+0*N] ;"
 
-    def extra_functions(self, fnspecs):
+    def extra_functions(self, fnspecs, oneline=True):
 
-        self.extra_functions_string = funcs2code(fnspecs)
+        self.extra_functions_string = funcs2code(fnspecs,oneline)
         
         
     def generate_code(self,debug=False,dtype_=np.float64):        
