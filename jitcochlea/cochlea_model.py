@@ -163,5 +163,13 @@ class Cochlea():
         # extern "C" void run(floating* X_t, floating* tt, floating* inputs, floating* fix_parameters, floating* parameters, floating* base_parameters, int* dimensions, floating* solver_options )
         
         self.func( X_t, tt, X_0, inputs, array_fix_parameters, array_spatial_parameters, base_parameters, dimensions, solver_options )
+
+        results = {}
+
+        for i,k in enumerate(self.dynvars):
         
-        return tt,X_t
+            results[k] = X_t[:,i+self.n_vars::self.n_vars]
+        
+        results['t'] = tt
+
+        return results

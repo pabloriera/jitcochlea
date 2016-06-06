@@ -210,11 +210,11 @@ def pure2cochlea_explore_thread(C, pure_tone,data,nthreads=1,func=None):
                 print "Running",j,"of",len(f0_list)
                 print A_db_list[j],f0_list[j],duration_list[j]
                 
-                tt, X_t = pure2cochlea(C,  pure_tone, data )
+                out = pure2cochlea(C,  pure_tone, data )
                 if func:
-                    pure_tone['out']= func(X_t)
+                    pure_tone['out']= func(out)
                 else:
-                    pure_tone['out']= ( tt, X_t )
+                    pure_tone['out']= out
                 
                 responses.append(pure_tone)
 
@@ -252,11 +252,11 @@ def pure2cochlea_explore_multiprocess(C, pure_tone, data, nprocs = 1, func=None)
             print "Running",j,"of",len(jj)
             print A_db_list[j],f0_list[j],duration_list[j]
             
-            tt, X_t = pure2cochlea(C,  pure_tone, data )
+            out = pure2cochlea(C,  pure_tone, data )
             if func:
-                pure_tone['out']= func(X_t)
+                pure_tone['out']= func(out)
             else:
-                pure_tone['out']= ( tt, X_t )
+                pure_tone['out']= out
             
             response.append(pure_tone)
         
@@ -299,9 +299,9 @@ def pure2cochlea(C, pure_tone,data):
     A = db2rms(pure_tone['amplitude_db'])
     stimulus = tukey(n_t,0.2)*A*np.sin(2*np.pi*pure_tone['f0']*t)    
 
-    tt, X_t = C.run(stimulus, data=data )
+    out = C.run(stimulus, data=data )
     
-    return tt, X_t
+    return out
 
 ascale = 1e-8
 

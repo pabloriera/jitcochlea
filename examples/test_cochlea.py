@@ -60,7 +60,9 @@ d = w/Q
 data['ww'] = ww
 data['d'] = d
 data['d0'] = d*10.0
-         
-tt, X_t = C.run(stimulus, data=data)
+
+
+re = C.run(stimulus, data=data)
+xx = re['x']
 #%%
-pl.semilogy(x[1:], np.sqrt(X_t[:-1,2::2]**2).mean(0))
+pl.semilogy(x[1:], np.sqrt(xx**2).mean(0))

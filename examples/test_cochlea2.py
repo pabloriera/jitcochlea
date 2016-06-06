@@ -15,11 +15,11 @@ spatial_parameters = ("d", "ww","wz","e")
 inputs = ()
 formula = {'x': 'y',
            'y': 'p - g',
-           'z1': '-wz*z2 - e*z1 -(z1*z1+z2*z2)*z1+alpha*x',
-           'z2': 'wz*z1 - e*z2  -(z1*z1+z2*z2)*z2',
-           'g': 'ww*(x+z1) + d*y '}
+           'z1': '-wz*z2 - e*z1 - (z1*z1+z2*z2)*z1+alpha*x',
+           'z2': 'wz*z1 - e*z2  - (z1*z1+z2*z2)*z2',
+           'g': 'ww*(x+beta*z1) + d*y '}
            
-fixed_parameters = ("alpha",)
+fixed_parameters = ("alpha","beta")
 
 C.setup(formula, spatial_parameters, fixed_parameters, inputs)
 C.generate_code()
@@ -40,7 +40,7 @@ data = {'fs': 100000.0,
          'solver':0,
          'abs_tol':1e-1,
          'rel_tol':1e-1,
-         'decimate': 5}
+         'decimate': 4}
          
 from scipy.signal import tukey
 
@@ -62,24 +62,31 @@ d = w/Q
 
 data['ww'] = ww
 s = 4
-data['wz'] = np.r_[w[s:],np.zeros(s)]
+data['wz'] = w#np.r_[w[s:],np.zeros(s)]
+
 data['d'] = d
-data['e'] = 100
-data['alpha'] = 20
-         
-tt, X_t = C.run(stimulus, data=data)
+data['e'] = data['wz']
+data['alpha'] = 1e18
+data['beta'] =  1e-18
+
+out = C.run(stimulus, data=data)
 #%%
-xi = C.dynvars.index('z1')
+
+x = out['x']
 
 pl.figure(23)
 #pl.clf()
-pl.semilogy( np.sqrt(X_t[:-2,xi+C.n_vars::C.n_vars]**2).mean(0))
-#pl.ylim(1e-3,1e7)
+pl.semilogy( np.sqrt(x**2).mean(0))
+
 pl.figure(24)
-pl.clf()
-pl.imshow(X_t[:,xi+C.n_vars::C.n_vars],cmap = pl.cm.seismic,aspect='auto')
+z1 = out['z1']
+pl.semilogy( np.sqrt(z1**2).mean(0))
+
+#pl.ylim(1e-3,1e7)
+#pl.figure(24)
+#pl.clf()
+#pl.imshow(X_t[:,xi+C.n_vars::C.n_vars],cmap = pl.cm.seismic,aspect='auto')
 #%%
 #pl.figure(25)
 #pl.clf()
 #pl.plot(X_t[-2,3::4])
-
