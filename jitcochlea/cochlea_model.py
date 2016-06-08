@@ -13,7 +13,7 @@ class Cochlea():
         self.builded = False
         self.extra_functions_string = ""
     
-    def setup(self, formula, spatial_parameters, fix_parameters, inputs):
+    def setup(self, formula, spatial_parameters, fix_parameters, inputs = ()):
         
         #spatial_parameters = ("d", "ww")
         #inputs = ()
