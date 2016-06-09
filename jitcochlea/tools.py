@@ -130,7 +130,7 @@ def eqparser(formula, parameters=[], coefficients = [], inputs=[]):
     main_eq = generate_eq(dynvars, formula_)
     main_eq = replaces( "".join(main_eq.values()), parameters,coefficients, inputs)
 
-    g_assing = generate_eq(formula.keys(), {'g':formula['g']}, var = 'g', ix = 'j')
+    g_assing = generate_eq(dynvars, {'g':formula['g']}, var = 'g', ix = 'j')
     g_assing = replaces(g_assing['g'],parameters,coefficients, inputs)
     
     n_inputs = len(inputs)

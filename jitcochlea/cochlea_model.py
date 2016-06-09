@@ -55,7 +55,7 @@ class Cochlea():
             self.code2 = file_.read()
 
                 
-        subs = {"system_equation_0":self.equation.replace("i","0").replace("j","0"),
+        subs = {"system_equation_0":self.equation.replace("[i","[0").replace("[j","[0").replace("p[0]","p[0]/mef").replace("g[0]","g[0]/mef"),
                 "system_equation_i":self.equation,
                 "g_assignation": self.g_assign,
                 "input_0": "linear_interpolation(in,t / dt)",
@@ -116,9 +116,9 @@ class Cochlea():
         #signal = np.sin(2*np.pi*t_signal*f0)*tukey(n_t)
         
         data_ = {'fs': 100000.0, 'height': 0.001, 
-                'middle_ear': False, 'density': 1000, 'length': 0.035,
+                'density': 1000, 'length': 0.035,
                 'mass': 0.03, 'fmin': 100.0, 'fluid':1,
-                'n_channels':400, 'm0':1,'mef':10.0,
+                'n_channels':400, 'mef':1.0,
                 'solver':0,'abs_tol':1e-4,'rel_tol':1e-4,'decimate':1}
                 
         data_.update(data)
@@ -158,7 +158,7 @@ class Cochlea():
         inputs = np.array(signal).astype(self.dtype)
                   
         dimensions = np.array([n_t,self.n_vars,n_channels, self.n_inputs, self.n_spatial_parameters,self.n_fix_parameters, data['fs'], dec]).astype(np.int32)
-        base_parameters = np.array([alpha, beta, data['m0'], fluid]).astype(self.dtype)
+        base_parameters = np.array([alpha, beta, data['mef'], fluid]).astype(self.dtype)
         solver_options = np.array([data['solver'], data['abs_tol'], data['rel_tol']]).astype(self.dtype)
         # extern "C" void run(floating* X_t, floating* tt, floating* inputs, floating* fix_parameters, floating* parameters, floating* base_parameters, int* dimensions, floating* solver_options )
         
@@ -168,7 +168,7 @@ class Cochlea():
 
         for i,k in enumerate(self.dynvars):
         
-            results[k] = X_t[:,i+self.n_vars::self.n_vars]
+            results[k] = X_t[:,i::self.n_vars]
         
         results['t'] = tt
 

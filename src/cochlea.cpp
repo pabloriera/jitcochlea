@@ -22,7 +22,7 @@ void Cochlea_t::gaussian_elimination_init()
 
     //asb = mass height
     //      -----------
-    //      dx**2 density
+    //      2 dx**2 density
 
     asb =  alpha/beta;
 
@@ -78,12 +78,12 @@ void Cochlea_t::operator() (  floating_vector &X , floating_vector &dXdt , float
     if(fluid)
     {
         //COPMUTE p solving Ap = (q-g);
-        p[0] = (input_0 - g[0]) / b[0];
+        p[0] = (-input_0 + g[0]) / b[0];
     
         for (int i = 1; i < N; i++)
         {
             floating input_i = $input_i;
-            p[i] = (input_i - g[i] - a[i] * p[i - 1]) * k[i];
+            p[i] = (-input_i + g[i] - a[i] * p[i - 1]) * k[i];
         }
       
         ///* loop from N - 2 to 0 inclusive */
@@ -102,7 +102,7 @@ void Cochlea_t::operator() (  floating_vector &X , floating_vector &dXdt , float
     {
         //equations example
         // dXdt[i+0] = X[i+1];
-        // dXdt[i+1] = p[i] - g[i];
+        // dXdt[i+1] =  -p[i] - g[i];
         // dXdt[i+2] = X[i+3];
         // dXdt[i+3] = -X[i+2];
 

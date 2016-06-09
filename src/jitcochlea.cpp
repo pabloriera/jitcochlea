@@ -25,12 +25,12 @@ extern "C" void run(floating *X_t, floating* tt, floating* X_0, floating* inputs
 
     C.alpha = base_parameters[0];
     C.beta = base_parameters[1];
-    C.m0 = base_parameters[2];
+    C.mef = base_parameters[2];
     C.fluid = base_parameters[3];
     
     // cout << "C.alpha:" << C.alpha << "\t";
     // cout << "C.beta:" << C.beta << "\t";
-    // cout << "C.m0:" << C.m0 << "\t";
+    // cout << "C.mef:" << C.mef << "\t";
     // cout << "C.n_t:" << C.n_t << "\t";
     // cout << "C.n_vars:" << C.n_vars << "\t";
     // cout << "C.n_channels:" << C.n_channels << "\t";

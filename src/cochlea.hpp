@@ -44,7 +44,7 @@ class Cochlea_t {
         
         int n_t, n_vars, n_channels, n_parameters, n_coefficients, n_inputs, N;
         
-        floating alpha, beta, asb, fluid, m0;
+        floating alpha, beta, asb, fluid, mef;
     
 };
 
