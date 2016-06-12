@@ -46,10 +46,6 @@ out = C.run(stimulus, data=data)        # the stimulus is the signal that forces
 x = out['x']
 ```
 
-**TODO**
-
-Add noise, arbitrary couplings, feedback, fix setup, more readable data key
-
 **Dependencies:**
 
 - Boost with odeint (v1.52 or more)
@@ -60,11 +56,12 @@ Add noise, arbitrary couplings, feedback, fix setup, more readable data key
 
 ```
 sudo apt-get install libboost-all-dev python-numpy build-essential
-```
 
-**Installation:**
-
-```
 sudo python setup.py install
+
 sudo chmod 644 /usr/local/lib/python2.7/dist-packages/jitcochlea-1.0-py2.7.egg/src/*
 ```
+
+**TODO**
+
+Add noise, arbitrary couplings, time delayed feedback
