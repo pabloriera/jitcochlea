@@ -1,3 +1,3 @@
-from tools import *
-from cochlea_model import *
+from .tools import *
+from .cochlea_model import *
 
