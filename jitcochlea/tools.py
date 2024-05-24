@@ -13,7 +13,7 @@ class DynLib():
     def build_code(self,codes_list, clean=True , include_dirs = "[]" ):
         
         import os
-        print os.getcwd()
+        print(os.getcwd())
 
         if type(codes_list) not in [tuple, list]:
             codes_list = [codes_list]
@@ -213,8 +213,8 @@ def pure2cochlea_explore_thread(C, pure_tone,data,nthreads=1,func=None):
                 pure_tone = {'amplitude_db':A_db_list[j],'f0':f0_list[j],'duration':duration_list[j]}
                 pure_tone['ix']=j
                             
-                print "Running",j,"of",len(f0_list)
-                print A_db_list[j],f0_list[j],duration_list[j]
+                print("Running",j,"of",len(f0_list))
+                print(A_db_list[j],f0_list[j],duration_list[j])
                 
                 out = pure2cochlea(C,  pure_tone, data )
                 if func:
@@ -255,8 +255,8 @@ def pure2cochlea_explore_multiprocess(C, pure_tone, data, nprocs = 1, func=None)
         for j in jj:
             pure_tone = {'amplitude_db':A_db_list[j],'f0':f0_list[j],'duration':duration_list[j]}
             pure_tone['ix']=j
-            print "Running",j,"of",len(jj)
-            print A_db_list[j],f0_list[j],duration_list[j]
+            print("Running",j,"of",len(jj))
+            print(A_db_list[j],f0_list[j],duration_list[j])
             
             out = pure2cochlea(C,  pure_tone, data )
             if func:
